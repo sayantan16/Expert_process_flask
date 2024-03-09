@@ -66,11 +66,48 @@ body, html {
 }
 
 .text-block-content-1 {
-    height: 100%; /* Adjust the height as needed */
-    overflow-y: auto; /* Scroll bar will appear if content is taller than the container */
-    background-color: #f8f9fa; /* Light gray background, change as needed */
+    height: 100%; /* Adjust based on content or set a specific height */
+    max-height: 100%; /* Maximum height before scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
-    padding: 10px; /* Padding inside the scrollable area */
+    padding: 10px; /* Outer padding */
+    /* font-family: "Consolas", "Monaco", "Lucida Console", monospace; */
+    font-size: 0.95em; /* Adjust font size as needed */
+    border: 1px solid #ddd; /* Light border around the code block */
+}
+
+.text-block-content-1 pre {
+    margin: 0; /* Removes default margin from <pre> */
+    padding: 15px; /* Padding inside the code block */
+    overflow: auto; /* Ensures the code fits within the container */
+    border-radius: 4px; /* Rounded corners inside the container */
+    background-color: #282c34; /* Dark background for the code block */
+    color: #abb2bf; /* Light text color for readability */
+}
+
+.text-block-content-1 code {
+    font-family: inherit; /* Inherits font from <pre> for consistency */
+    color: inherit; /* Inherits color from <pre> for consistency */
+    background-color: transparent; /* Avoids overriding <pre> background */
+    padding: 0; /* No additional padding needed here */
+}
+
+/* Optional: Style for custom scrollbar (for webkit browsers) */
+.text-block-content-1::-webkit-scrollbar {
+    width: 6px;
+}
+
+.text-block-content-1::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.text-block-content-1::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+.text-block-content-1::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 .text-block-content-2 {
