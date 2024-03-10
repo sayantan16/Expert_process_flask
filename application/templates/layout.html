@@ -42,17 +42,5 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script>
-      // JavaScript to update button text with the selected dropdown item
-      var dropdownItems = document.querySelectorAll('.dropdown-item');
-      var dropdownButton = document.getElementById('dropdownMenuButton');
-
-      dropdownItems.forEach(function (item) {
-        item.addEventListener('click', function () {
-          dropdownButton.textContent = this.textContent;
-          dropdownButton.focus(); // To close the dropdown
-        });
-      });
-    </script>
   </body>
 </html>

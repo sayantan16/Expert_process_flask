@@ -17,13 +17,14 @@
         <li class="nav-item dropdown" style="padding-left: 50%">
           <button
             class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            id="dropdownMenuButton"
           >
-            Select Problem Category
+            {{ page_title|default('Select Page', true) }}
           </button>
-          <ul class="dropdown-menu dropdown-menu-dark">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <li>
               <a class="dropdown-item" href="{{ url_for('code') }}"
                 >Coding Problem</a

@@ -60,37 +60,83 @@
 </div>
 {% endblock %} {% block explanation %}
 <div class="text-block-content-2">
-  In Python, a function is a block of organized, reusable code designed to
-  perform a single, related action, enhancing modularity and code reusability in
-  applications. A function is created with the **`def`** keyword, followed by
-  the function name and parentheses, which may include parameters or arguments.
-  The code block within a function starts with a colon and is indented, and the
-  first statement can be an optional documentation string (docstring) to
-  describe the function's purpose. Functions can be of different types:
-  **built-in functions**, which are pre-defined in Python like `print()`,
-  `len()`, and `type()`, **user-defined functions**, which are created by users
-  to perform specific tasks, and **anonymous functions**, or **lambda
-  functions**, defined using the **`lambda`** keyword without a name. To execute
-  a function, it must be called by its name followed by parentheses, optionally
-  including arguments if needed. Functions can take parameters, acting as
-  placeholders for the values it needs to operate on, with the actual values
-  passed to the function being referred to as arguments. One of the powerful
-  features of Python functions is their ability to return values using the
-  **`return`** statement. The scope of variables within functions is also an
-  important concept; variables declared inside a function are local to that
-  function, while variables declared outside are in the global scope. Python
-  supports several types of arguments: **positional arguments**, which are
-  passed in order from left to right, **keyword arguments**, which are passed by
-  explicitly naming each parameter, **default arguments**, which are given
-  default values if no argument value is passed during the function call, and
-  **variable-length arguments**, which allow passing a variable number of
-  arguments to a function, distinguished as *args for non-keyword arguments and
-  **kwargs for keyword arguments. Understanding and utilizing these concepts and
-  types of functions and arguments are essential for effective Python
-  programming. Delving into each of these areas, especially the creation and use
-  of **user-defined functions**, **lambda functions**, the concept of **scope**,
-  **return values**, and the different **argument types**, can significantly
-  enhance one's programming skills and problem-solving capabilities in Python.
+  <h2>Understanding Python Functions</h2>
+  <p>
+    In Python, a <strong>function</strong> is a block of organized, reusable
+    code designed to perform a single, related action. This enhances modularity
+    and code reusability in applications. A function is created with the
+    <code>def</code> keyword, followed by the function name and parentheses.
+    These parentheses may include parameters or arguments. The code block within
+    a function starts with a colon and is indented. The first statement can be
+    an optional documentation string (docstring) to describe the function's
+    purpose.
+  </p>
+
+  <h3>Types of Functions</h3>
+  <ul>
+    <li>
+      <strong>Built-in functions</strong>, which are pre-defined in Python like
+      <code>print()</code>, <code>len()</code>, and <code>type()</code>.
+    </li>
+    <li>
+      <strong>User-defined functions</strong>, which are created by users to
+      perform specific tasks.
+    </li>
+    <li>
+      <strong>Anonymous functions</strong>, or
+      <strong>lambda functions</strong>, defined using the
+      <code>lambda</code> keyword without a name.
+    </li>
+  </ul>
+
+  <h3>Executing Functions</h3>
+  <p>
+    To execute a function, it must be called by its name followed by
+    parentheses, optionally including arguments if needed. Functions can take
+    parameters, acting as placeholders for the values it needs to operate on.
+    The actual values passed to the function are referred to as arguments.
+  </p>
+
+  <h3>Features of Python Functions</h3>
+  <p>
+    One of the powerful features of Python functions is their ability to return
+    values using the <code>return</code> statement. The scope of variables
+    within functions is also an important concept; variables declared inside a
+    function are local to that function, while variables declared outside are in
+    the global scope.
+  </p>
+
+  <h3>Types of Arguments</h3>
+  <p>Python supports several types of arguments:</p>
+  <ul>
+    <li>
+      <strong>Positional arguments</strong>, which are passed in order from left
+      to right.
+    </li>
+    <li>
+      <strong>Keyword arguments</strong>, which are passed by explicitly naming
+      each parameter.
+    </li>
+    <li>
+      <strong>Default arguments</strong>, which are given default values if no
+      argument value is passed during the function call.
+    </li>
+    <li>
+      <strong>Variable-length arguments</strong>, which allow passing a variable
+      number of arguments to a function. These are distinguished as
+      <em>args</em> for non-keyword arguments and <em>**kwargs</em> for keyword
+      arguments.
+    </li>
+  </ul>
+
+  <p>
+    Understanding and utilizing these concepts and types of functions and
+    arguments are essential for effective Python programming. Delving into each
+    of these areas, especially the creation and use of user-defined functions,
+    lambda functions, the concept of scope, return values, and the different
+    argument types, can significantly enhance one's programming skills and
+    problem-solving capabilities in Python.
+  </p>
 </div>
 {% endblock %} {% block graph %}
 <div class="text-block-content-3">
