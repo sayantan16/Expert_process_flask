@@ -7,6 +7,7 @@ body, html {
 .container {
     display: flex;
     height: 93%;
+    width: 100%;
 }
 
 .left-section, .right-section {
@@ -15,6 +16,7 @@ body, html {
     flex-direction: column;
     align-items: center;
     padding-top: 1%;
+    margin: 0;
 }
 
 .left-section {
@@ -119,9 +121,11 @@ body, html {
 }
 
 .text-block-content-3 {
-    height: 90%; /* Adjust the height as needed */
-    overflow-y: auto; /* Scroll bar will appear if content is taller than the container */
+    position: relative; /* Ensure the container is positioned */
+    height: 90vh; /* Adjust the height as needed, vh could make it responsive */
+    width: 100%;
+    overflow: hidden; /* Hide overflow to maintain a clean layout */
     background-color: #f8f9fa; /* Light gray background, change as needed */
     border-radius: 4px; /* Rounded corners */
-    padding: 10px; /* Padding inside the scrollable area */
+    padding: 0; /* Adjust padding to ensure the iframe fits perfectly */
 }
