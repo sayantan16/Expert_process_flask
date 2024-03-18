@@ -1,7 +1,7 @@
-import json
 from application import app
 from flask import render_template, jsonify, request, current_app
 import os
+import json
 
 @app.route("/")
 @app.route("/index")
