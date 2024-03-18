@@ -36,69 +36,66 @@
     </style>
   </head>
   <body>
-    <svg width="960" height="600"><g /></svg>
-    <div id="responseText" style="padding: 20px; color: #333"></div>
+    <svg width="2300" height="500"><g /></svg>
+    <!-- <div id="responseText" style="padding: 20px; color: #333"></div> -->
 
     <script>
+      function drawGraph(graphData) {
+        var g = new dagreD3.graphlib.Graph().setGraph({});
+
+        graphData.nodes.forEach(function (node) {
+          var buttonHtml =
+            "<button class='node-button' onclick='nodeClicked(\"" +
+            node.label +
+            '")\'>' +
+            node.label +
+            '</button>';
+          g.setNode(node.id, { label: buttonHtml, labelType: 'html' });
+        });
+
+        graphData.edges.forEach(function (edge) {
+          g.setEdge(edge.source, edge.target, { label: edge.label });
+        });
+
+        var render = new dagreD3.render();
+        var svg = d3.select('svg'),
+          inner = svg.select('g');
+
+        render(inner, g);
+
+        // Set up zoom support
+        var zoom = d3.zoom().on('zoom', function (event) {
+          inner.attr('transform', event.transform);
+        });
+        svg.call(zoom);
+
+        // Center the graph
+        var initialScale = 0.75;
+        svg.call(
+          zoom.transform,
+          d3.zoomIdentity
+            .translate(
+              (svg.attr('width') - g.graph().width * initialScale) / 2,
+              20
+            )
+            .scale(initialScale)
+        );
+
+        svg.attr('height', g.graph().height * initialScale + 40);
+      }
+
       fetch('/graph-data')
-        .then((response) => response.json())
-        .then(function (graphData) {
-          var g = new dagreD3.graphlib.Graph().setGraph({});
-
-          graphData.nodes.forEach(function (node) {
-            var buttonHtml =
-              "<button class='node-button' onclick='nodeClicked(\"" +
-              node.label +
-              '")\'>' +
-              node.label +
-              '</button>';
-            g.setNode(node.id, { label: buttonHtml, labelType: 'html' });
-          });
-
-          graphData.edges.forEach(function (edge) {
-            g.setEdge(edge.source, edge.target, { label: edge.label });
-          });
-
-          var render = new dagreD3.render();
-          var svg = d3.select('svg'),
-            inner = svg.select('g');
-
-          var zoom = d3.zoom().on('zoom', function (event) {
-            inner.attr('transform', event.transform);
-          });
-          svg.call(zoom);
-
-          render(inner, g);
-
-          var initialScale = 0.75;
-          svg.call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(
-                (svg.attr('width') - g.graph().width * initialScale) / 2,
-                20
-              )
-              .scale(initialScale)
-          );
-          svg.attr('height', g.graph().height * initialScale + 40);
+        .then(function (response) {
+          return response.json();
         })
+        .then(drawGraph)
         .catch(function (error) {
           console.error('Error fetching the graph data:', error);
         });
 
       function nodeClicked(label) {
-        fetch('/node-click', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ label: label }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            document.getElementById('responseText').innerText = data.text;
-          })
-          .catch((error) => console.error('Error:', error));
+        // Post a message to the parent window
+        window.parent.postMessage({ label: label }, '*'); // Use '*' for any origin or specify your domain
       }
     </script>
   </body>
