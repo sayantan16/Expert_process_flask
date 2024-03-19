@@ -16,26 +16,33 @@
   </head>
   <body>
     {% include "includes/nav.html" %}
-    <div class="container">
-      <div class="left-section">
-        <div class="text-block-1">
-          <!-- <h3 class="text-block-heading">Heading</h3>
-          <hr class="text-block-divider" /> -->
-          {% block problem %} {% endblock %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 left-section">
+          <div class="text-block-1">
+            <!-- <h3 class="text-block-heading">Heading</h3> -->
+            <!-- <hr class="text-block-divider" /> -->
+            {% block problem %}{% endblock %}
+          </div>
+
+          <div class="text-block-2">
+            <h4 class="text-block-heading">Explanation</h4>
+            <hr class="text-block-divider" />
+            {% block explanation %}{% endblock %}
+          </div>
         </div>
 
-        <div class="text-block-2">
-          <h4 class="text-block-heading">Explanation</h4>
-          <hr class="text-block-divider" />
-          {% block explanation %} {% endblock %}
+        <div class="col-md-6 right-section">
+          <div class="rectangle">
+            <h4 class="text-block-heading">Knowledge Graph</h4>
+            <hr class="text-block-divider" />
+            {% block graph %}{% endblock %}
+          </div>
         </div>
       </div>
-
-      <div class="right-section">
-        <div class="rectangle">{% block graph %} {% endblock %}</div>
-      </div>
+      <!-- Corrected: Closing tag for the "row" div -->
     </div>
-    {% block scripts %} {% endblock %}
+    {% block scripts %}{% endblock %}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
