@@ -92,7 +92,7 @@ body, html {
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
     font-size: 0.95em; /* Adjust font size as needed */
-    border: 1px solid #8c8b8b; /* Light border around the code block */
+    border: 4px solid #8c8b8b; /* Light border around the code block */
 }
 
 .text-block-content-1 pre {
