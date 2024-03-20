@@ -1,19 +1,24 @@
-{% extends "layout.html" %} {% block problem %}
-<div class="text-block-content-1">
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. Neque aliquam vestibulum morbi
-  blandit cursus.
+{% extends "layout.html" %} {% block left %}
+<div class="rectangle">
+  <!-- Specify the URL for the form's action attribute -->
+  <form id="exampleForm" action="{{ url_for('code') }}" method="post">
+    <div class="mb-3">
+      <textarea
+        class="form-control"
+        id="exampleTextArea"
+        name="text"
+        placeholder="Enter text here"
+      ></textarea>
+    </div>
+
+    <hr class="text-block-divider" />
+
+    <div class="mb-3 d-grid gap-2">
+      <!-- The type="submit" will trigger the form action -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
 </div>
-{% endblock %} {% block explanation %}
-<div class="text-block-content-2">
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. Neque aliquam vestibulum morbi
-  blandit cursus.
-</div>
-{% endblock %} {% block graph %}
-<div class="text-block-content-3">
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. Neque aliquam vestibulum morbi
-  blandit cursus.
-</div>
+{% endblock %} {% block right %}
+<div class="text-block-content-3"></div>
 {% endblock %}

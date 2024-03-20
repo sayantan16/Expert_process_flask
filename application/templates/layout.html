@@ -18,29 +18,16 @@
     {% include "includes/nav.html" %}
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-6 left-section">
-          <div class="text-block-1">
-            <!-- <h3 class="text-block-heading">Heading</h3> -->
-            <!-- <hr class="text-block-divider" /> -->
-            {% block problem %}{% endblock %}
-          </div>
-
-          <div class="text-block-2">
-            <h4 class="text-block-heading">Explanation</h4>
-            <hr class="text-block-divider" />
-            {% block explanation %}{% endblock %}
-          </div>
-        </div>
+        <div class="col-md-6 left-section">{% block left %}{% endblock %}</div>
 
         <div class="col-md-6 right-section">
           <div class="rectangle">
             <h4 class="text-block-heading">Knowledge Graph</h4>
             <hr class="text-block-divider" />
-            {% block graph %}{% endblock %}
+            {% block right %}{% endblock %}
           </div>
         </div>
       </div>
-      <!-- Corrected: Closing tag for the "row" div -->
     </div>
     {% block scripts %}{% endblock %}
     <script

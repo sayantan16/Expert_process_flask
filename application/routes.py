@@ -9,8 +9,12 @@ import json
 def index():
     return render_template("index.html", page_title='Choose a Problem')
 
-@app.route("/code")
+@app.route("/code", methods=['GET', 'POST'])
 def code():
+    if request.method == 'POST':
+        text_data = request.form['text']
+        return render_template("code.html", text_data=text_data)
+    # If it's a GET request, just render the original code page
     return render_template("code.html", page_title='Coding Problem')
 
 @app.route("/math")

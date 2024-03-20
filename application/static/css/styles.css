@@ -1,30 +1,29 @@
+/* General reset and base styles */
 body, html {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
+/* Container styles */
 .container {
-    flex-wrap: nowrap; /* No wrapping to a new line */
-    height: 90vh; /* Full height of the viewport */
-    width: 100%; /* Full width */
+    flex-wrap: nowrap;
+    height: 90vh;
+    width: 100%;
     margin: 0;
 }
 
-.left-section {
-    flex-direction: column;
-    padding-top: 1%;
-    align-items: left;
-    height:90vh;
-    gap: 2%; /* Space between text blocks */
+/* Section styles */
+.left-section, .right-section {
+    height: 90vh; /* Full height of the viewport */
+    padding: 1%;
+    gap: 2%;
 }
 
-.right-section {
-    flex:1;
-    height:90%;
-    /* flex: 1;  Remove this line */
-    width: 100%; /* Takes up the remaining space */
-    padding: 1%; /* Adjust padding as necessary *//* Aligns items to the top */
+.left-section {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
 }
 
 .text-block-1 {
@@ -47,16 +46,35 @@ body, html {
     border-radius: 4px; /* Rounded corners */
 }
 
-.right-section .rectangle {
-    overflow:auto;
+/* Rectangle (card-like container) styles */
+.rectangle {
+    overflow: auto;
     width: 100%;
-    height: 90%;
-    padding :2%;
-    background-color: #f8f9fa; /* Bootstrap primary color, change as needed */
-    border: 1px solid #dee2e6; /* Light gray border, change as needed */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Simple shadow for depth */
-    border-radius: 4px; /* Rounded corners */
-    box-sizing:border-box
+    height: 100%; /* Full height minus padding and margin */
+    padding: 2vh;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form controls (input, textarea) */
+.form-control {
+    width: 100%; /* Full width */
+    height: 70vh;
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: auto; /* Allow vertical scrolling */
+    padding: .375rem .75rem; /* Bootstrap's default padding for form controls */
+    border-radius: .25rem; /* Bootstrap's default border radius */
+    border: 1px solid #ced4da; /* Bootstrap's default border */
+    font-size: 1rem; /* Bootstrap's default font size */
+    line-height: 1.5; /* Bootstrap's default line height */
+    color: #495057; /* Bootstrap's default text color */
+    background-color: #fff; /* Bootstrap's default background color */
+    background-clip: padding-box; /* Bootstrap's default background clip */
 }
   
 .text-block-heading {
@@ -75,13 +93,12 @@ body, html {
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
     padding: 10px; /* Outer padding */
-    /* font-family: "Consolas", "Monaco", "Lucida Console", monospace; */
     font-size: 0.95em; /* Adjust font size as needed */
-    border: 1px solid #ddd; /* Light border around the code block */
+    border: 1px solid #8c8b8b; /* Light border around the code block */
 }
 
 .text-block-content-1 pre {
-    margin: 0; /* Removes default margin from <pre> */
+    margin: 3; /* Removes default margin from <pre> */
     padding: 15px; /* Padding inside the code block */
     overflow: auto; /* Ensures the code fits within the container */
     border-radius: 4px; /* Rounded corners inside the container */
@@ -114,11 +131,15 @@ body, html {
 }
 
 .text-block-content-2 {
-    height: 80%; /* Adjust the height as needed */
-    overflow-y: auto; /* Scroll bar will appear if content is taller than the container */
-    background-color: #f8f9fa; /* Light gray background, change as needed */
+    height: 100%; /* Adjust based on content or set a specific height */
+    max-height: 100%; /* Maximum height before scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
-    padding: 10px; /* Padding inside the scrollable area */
+    padding: 10px; /* Outer padding */
+    font-size: 0.95em; /* Adjust font size as needed */
+    border: 4px solid #8c8b8b; /* Light border around the code block */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .text-block-content-3 {
@@ -127,4 +148,34 @@ body, html {
     background-color: #f8f9fa; /* Light gray background, change as needed */
     border-radius: 4px; /* Rounded corners */
     padding: 0; /* Adjust padding to ensure the iframe fits perfectly */
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+/* Button container to stack buttons vertically */
+.d-grid {
+    display: grid;
+    grid-gap: 10px;
+}
+
+/* Responsive adjustments if necessary */
+@media (max-width: 768px) {
+    .left-section, .right-section {
+        width: 100%;
+        height: auto;
+        padding: 0;
+    }
+
+    .rectangle {
+        height: auto;
+    }
+
+    .form-control {
+        height: auto; /* Adjust height for smaller screens */
+    }
 }
