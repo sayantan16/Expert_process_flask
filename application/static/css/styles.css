@@ -87,30 +87,26 @@ body, html {
 }
 
 .text-block-content-1 {
-    height: 100%; /* Adjust based on content or set a specific height */
-    max-height: 100%; /* Maximum height before scrolling */
+    height: 98%; /* Adjust based on content or set a specific height */
     overflow-y: auto; /* Enable vertical scrolling */
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
-    padding: 10px; /* Outer padding */
     font-size: 0.95em; /* Adjust font size as needed */
     border: 1px solid #8c8b8b; /* Light border around the code block */
 }
 
 .text-block-content-1 pre {
-    margin: 3; /* Removes default margin from <pre> */
-    padding: 15px; /* Padding inside the code block */
     overflow: auto; /* Ensures the code fits within the container */
     border-radius: 4px; /* Rounded corners inside the container */
     background-color: #282c34; /* Dark background for the code block */
-    color: #abb2bf; /* Light text color for readability */
+    color: #e9e9e9; /* Light text color for readability */
+    font-size: medium;
 }
 
 .text-block-content-1 code {
     font-family: inherit; /* Inherits font from <pre> for consistency */
     color: inherit; /* Inherits color from <pre> for consistency */
     background-color: transparent; /* Avoids overriding <pre> background */
-    padding: 0; /* No additional padding needed here */
 }
 
 /* Optional: Style for custom scrollbar (for webkit browsers) */
@@ -131,8 +127,7 @@ body, html {
 }
 
 .text-block-content-2 {
-    height: 100%; /* Adjust based on content or set a specific height */
-    max-height: 100%; /* Maximum height before scrolling */
+    height: 98%; /* Adjust based on content or set a specific height */
     overflow-y: auto; /* Enable vertical scrolling */
     background-color: #f8f9fa; /* Light gray background */
     border-radius: 4px; /* Rounded corners */
@@ -140,6 +135,7 @@ body, html {
     font-size: 0.95em; /* Adjust font size as needed */
     border: 4px solid #8c8b8b; /* Light border around the code block */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: medium;
 }
 
 .text-block-content-3 {
