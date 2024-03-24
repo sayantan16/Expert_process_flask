@@ -6,3 +6,7 @@
 
 1. source venv/bin/activate
 2. flask run
+
+<!-- To set the environment variable (Mac) -->
+
+export OPENAI_API_KEY='Your Key Here';

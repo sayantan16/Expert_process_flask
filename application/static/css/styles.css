@@ -144,6 +144,8 @@ body, html {
     background-color: #f8f9fa; /* Light gray background, change as needed */
     border-radius: 4px; /* Rounded corners */
     padding: 0; /* Adjust padding to ensure the iframe fits perfectly */
+    overflow-x: auto; /* Enable vertical scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* Buttons */
