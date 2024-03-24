@@ -2,4 +2,4 @@ __pycache__
 .idea
 venv
 application/__pycache__
-application/static/jsonFiles/graphData.json
+application/static/jsonFiles/*
