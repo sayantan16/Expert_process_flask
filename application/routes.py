@@ -51,6 +51,29 @@ def make_selected_text_prompt(selected_text, model):
     explanation = response.choices[0].message.content if response.choices else "No explanation found."
     return explanation
 
+def make_topic_text_prompt(topic, model):
+    client = OpenAI()
+
+    response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a detailed explanation generator.\nPlease give a detailed explanation on the user input topic.\n\nGive a detailed explanation on the topic give, the explanation should contain general idea as well as its use-case. How the topic can be used and implemented.\n\nGive a very detailed explanation to the user for gaining expertise on the topic."
+                },
+                {
+                    "role": "user",
+                    "content": topic
+                }
+            ],
+            temperature=1,
+            max_tokens=512,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+    explanation = response.choices[0].message.content if response.choices else "No explanation found."
+    return explanation
 
 @app.route("/")
 @app.route("/index")
@@ -70,14 +93,6 @@ def code():
     # If it's a GET request, just render the original code page
     return render_template("code.html", page_title='Coding Problem')
 
-@app.route("/math")
-def math():
-    return render_template("math.html", page_title='Math Problem')
-
-@app.route("/vis")
-def vis():
-    return render_template("vis.html", page_title='Visualization Problem')
-
 @app.route('/graph-data')
 def graph_data():
     path_to_file = os.path.join(current_app.root_path, 'static', 'jsonFiles', 'graphData.json')
@@ -85,13 +100,17 @@ def graph_data():
         graph_data = json.load(f)
     return jsonify(graph_data)
 
-@app.route('/explanations')
+@app.route('/explanations', methods=['POST'])
 def explanations():
-    # Construct the path relative to the Flask application instance
-    path_to_file = os.path.join(current_app.root_path, 'static', 'jsonFiles', 'explanation.json')
-    with open(path_to_file) as f:
-        data = json.load(f)
-    return jsonify(data)
+    data = request.get_json()
+    topic = data.get('topic')
+
+    try:
+        explanation = make_topic_text_prompt(topic, "gpt-3.5-turbo-0125")
+    except Exception as e:
+        explanation = str(e)
+
+    return jsonify(explanation=explanation)
 
 @app.route('/my-flowchart')
 def my_flowchart():
@@ -103,8 +122,7 @@ def get_explanation():
     selected_text = data.get('selectedText')
 
     try:
-        response = make_selected_text_prompt(selected_text, "gpt-3.5-turbo-0125")
-        explanation = response
+        explanation = make_selected_text_prompt(selected_text, "gpt-3.5-turbo-0125")
     except Exception as e:
         explanation = str(e)
 

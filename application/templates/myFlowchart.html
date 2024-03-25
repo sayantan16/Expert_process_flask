@@ -94,7 +94,7 @@
 
       function nodeClicked(label) {
         // Post a message to the parent window
-        window.parent.postMessage({ label: label }, '*'); // Use '*' for any origin or specify your domain
+        window.parent.postMessage({ type: 'node-clicked', label: label }, '*'); // Use '*' for any origin or specify your domain
       }
     </script>
   </body>

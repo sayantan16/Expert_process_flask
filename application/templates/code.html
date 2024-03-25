@@ -21,26 +21,32 @@
 </div>
 {% endblock %} {% block scripts %}
 <script>
+  // Event listener for messages from the iframe
   window.addEventListener(
     'message',
     function (event) {
-      // Check event.origin here if you want to restrict messages to a certain origin for security
-      if (event.data.label) {
-        var label = event.data.label;
-        fetch('/explanations')
+      // Handle the node-clicked messages from myflowchart.html
+      if (event.data.type === 'node-clicked') {
+        // Use the event.data.label as the topic for explanation generation
+        var explanationBlock = document.getElementById('explanationBlock');
+        explanationBlock.innerText = 'Loading...'; // Show loading message
+
+        fetch('/explanations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // If using CSRF protection, add the token here
+          },
+          body: JSON.stringify({ topic: event.data.label }),
+        })
           .then(function (response) {
             return response.json();
           })
           .then(function (data) {
-            var explanation = data[label];
-            if (explanation) {
-              document.getElementById('explanationBlock').innerText =
-                explanation;
-            } else {
-              console.log('No explanation found for this topic.');
-            }
+            explanationBlock.innerText = data.explanation;
           })
           .catch(function (error) {
+            explanationBlock.innerText = 'An error occurred.';
             console.error('Error:', error);
           });
       }
@@ -48,6 +54,7 @@
     false
   );
 
+  // Event listener for the "Process" button
   document.getElementById('processBtn').addEventListener('click', function () {
     // Get the selected text
     var selectedText = window.getSelection().toString();
@@ -59,7 +66,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Add CSRF token header if CSRF protection is enabled
+          // If using CSRF protection, add the token here
         },
         body: JSON.stringify({ selectedText: selectedText }),
       })
