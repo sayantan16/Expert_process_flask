@@ -18,84 +18,77 @@
         fill: #333;
         stroke-width: 1.5px;
       }
-      button.node-button {
+      .node button {
         padding: 8px 16px;
-        border: 0;
+        border: none;
         cursor: pointer;
         border-radius: 5px;
         background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         color: white;
         font-weight: bold;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
       }
-      button.node-button:hover {
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+      .node button:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         transform: translateY(-2px);
       }
     </style>
   </head>
   <body>
-    <svg width="2300" height="500"><g /></svg>
+    <svg><g /></svg>
 
     <script>
       function drawGraph(graphData) {
         var g = new dagreD3.graphlib.Graph().setGraph({});
 
         graphData.nodes.forEach(function (node) {
-          var buttonHtml =
-            "<button class='node-button' onclick='nodeClicked(\"" +
-            node.label +
-            '")\'>' +
-            node.label +
-            '</button>';
-          g.setNode(node.id, { label: buttonHtml, labelType: 'html' });
+          g.setNode(node.id, {
+            label: node.label,
+            labelType: 'html',
+            padding: 0,
+            margin: 0,
+            width: 150,
+            height: 30,
+            // Custom HTML for the node
+            label: `<button class='node-button' onclick='nodeClicked("${node.label}")'>${node.label}</button>`,
+          });
         });
 
         graphData.edges.forEach(function (edge) {
-          g.setEdge(edge.source, edge.target, { label: edge.label });
+          g.setEdge(edge.source, edge.target, {
+            label: '',
+            width: 150,
+            height: 30,
+          });
         });
 
         var render = new dagreD3.render();
         var svg = d3.select('svg'),
           inner = svg.select('g');
 
+        // Render the graph
         render(inner, g);
 
-        // Set up zoom support
-        var zoom = d3.zoom().on('zoom', function (event) {
-          inner.attr('transform', event.transform);
-        });
-        svg.call(zoom);
+        // Adjust the SVG size based on the graph size
+        var graphWidth = g.graph().width + 40; // Adding some padding
+        var graphHeight = g.graph().height + 40; // Adding some padding
+        svg.attr('width', graphWidth).attr('height', graphHeight);
+        inner.attr('transform', 'translate(20, 20)');
+      }
 
-        // Center the graph
-        var initialScale = 0.75;
-        svg.call(
-          zoom.transform,
-          d3.zoomIdentity
-            .translate(
-              (svg.attr('width') - g.graph().width * initialScale) / 2,
-              20
-            )
-            .scale(initialScale)
-        );
-
-        svg.attr('height', g.graph().height * initialScale + 40);
+      function nodeClicked(label) {
+        console.log('Node clicked:', label);
+        // Example: Post a message to the parent window
+        window.parent.postMessage({ type: 'node-clicked', label: label }, '*');
       }
 
       fetch('/graph-data')
-        .then(function (response) {
-          return response.json();
-        })
+        .then((response) => response.json())
         .then(drawGraph)
-        .catch(function (error) {
-          console.error('Error fetching the graph data:', error);
-        });
-
-      function nodeClicked(label) {
-        // Post a message to the parent window
-        window.parent.postMessage({ type: 'node-clicked', label: label }, '*'); // Use '*' for any origin or specify your domain
-      }
+        .catch((error) =>
+          console.error('Error fetching the graph data:', error)
+        );
     </script>
   </body>
 </html>

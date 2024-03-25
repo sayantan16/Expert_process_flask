@@ -144,8 +144,6 @@ body, html {
     background-color: #f8f9fa; /* Light gray background, change as needed */
     border-radius: 4px; /* Rounded corners */
     padding: 0; /* Adjust padding to ensure the iframe fits perfectly */
-    overflow-x: auto; /* Enable vertical scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* Buttons */
@@ -160,6 +158,24 @@ body, html {
     display: grid;
     grid-gap: 10px;
 }
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #09f;
+    animation: spin 1s ease infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }  
 
 /* Responsive adjustments if necessary */
 @media (max-width: 768px) {

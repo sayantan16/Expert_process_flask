@@ -29,7 +29,7 @@
       if (event.data.type === 'node-clicked') {
         // Use the event.data.label as the topic for explanation generation
         var explanationBlock = document.getElementById('explanationBlock');
-        explanationBlock.innerText = 'Loading...'; // Show loading message
+        explanationBlock.innerHTML = '<div class="spinner"></div>';
 
         fetch('/explanations', {
           method: 'POST',
@@ -60,7 +60,7 @@
     var selectedText = window.getSelection().toString();
     if (selectedText) {
       var explanationBlock = document.getElementById('explanationBlock');
-      explanationBlock.innerText = 'Loading...'; // Show loading message
+      explanationBlock.innerHTML = '<div class="spinner"></div>';
 
       fetch('/get_explanation', {
         method: 'POST',
