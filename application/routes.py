@@ -5,7 +5,7 @@ import json
 from openai import OpenAI
 
 def make_knowledge_graph_prompt(codeinfo, model):
-    client = OpenAI()
+    client = OpenAI(api_key="")
 
     response = client.chat.completions.create(
         model=model,
@@ -28,7 +28,7 @@ def make_knowledge_graph_prompt(codeinfo, model):
     return response.choices[0].message.content
 
 def make_selected_text_prompt(selected_text, model):
-    client = OpenAI()
+    client = OpenAI(api_key="")
 
     response = client.chat.completions.create(
             model=model,
@@ -52,7 +52,7 @@ def make_selected_text_prompt(selected_text, model):
     return explanation
 
 def make_topic_text_prompt(topic, model):
-    client = OpenAI()
+    client = OpenAI(api_key="")
 
     response = client.chat.completions.create(
             model=model,
@@ -73,6 +73,36 @@ def make_topic_text_prompt(topic, model):
             presence_penalty=0
         )
     explanation = response.choices[0].message.content if response.choices else "No explanation found."
+    return explanation
+
+def update_knowledge_graph(topic, model):
+    client = OpenAI(api_key="")
+    with open('application/static/jsonFiles/graphData.json', 'r', encoding='utf-8') as json_file:
+        currentGraph = json.dumps(json.load(json_file))
+    #print('Current Graph:',currentGraph)
+    response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {
+        "role": "system",
+        "content": f"Take the JSON formatted knowledge graph inputted by the user and add more nodes related to this topic: {topic}, include edges to other relevant topics. Return the updated json in the same format"
+        },
+        {
+            "role": "user",
+            "content": currentGraph
+        }
+    ],
+    temperature=1,
+    max_tokens=800,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+    #print(response)
+    explanation = response.choices[0].message.content if response.choices else "No explanation found."
+    #print('updated graph',explanation)
+    with open('application/static/jsonFiles/graphData.json', 'w', encoding='utf-8') as json_file:
+            json.dump(json.loads(explanation), json_file)
     return explanation
 
 @app.route("/")
@@ -107,6 +137,7 @@ def explanations():
 
     try:
         explanation = make_topic_text_prompt(topic, "gpt-3.5-turbo-0125")
+        update_knowledge_graph(topic, "gpt-3.5-turbo-0125")
     except Exception as e:
         explanation = str(e)
 
