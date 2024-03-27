@@ -7,7 +7,7 @@ from openai import OpenAI
 CodeSnippet=""
 
 def make_knowledge_graph_prompt(codeinfo, model):
-    client = OpenAI(api_key="")
+    client = OpenAI()
 
     response = client.chat.completions.create(
         model=model,
@@ -30,7 +30,7 @@ def make_knowledge_graph_prompt(codeinfo, model):
     return response.choices[0].message.content
 
 def make_selected_text_prompt(selected_text, model):
-    client = OpenAI(api_key="")
+    client = OpenAI()
 
     response = client.chat.completions.create(
             model=model,
@@ -54,7 +54,7 @@ def make_selected_text_prompt(selected_text, model):
     return explanation
 
 def make_topic_text_prompt(topic, model):
-    client = OpenAI(api_key="")
+    client = OpenAI()
 
     response = client.chat.completions.create(
             model=model,
@@ -78,7 +78,7 @@ def make_topic_text_prompt(topic, model):
     return explanation
 
 def update_knowledge_graph(topic, model):
-    client = OpenAI(api_key="")
+    client = OpenAI()
     with open('application/static/jsonFiles/graphData.json', 'r', encoding='utf-8') as json_file:
         currentGraph = json.dumps(json.load(json_file))
     #print('Current Graph:',currentGraph)

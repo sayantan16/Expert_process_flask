@@ -23,45 +23,50 @@
 {% endblock %} {% block scripts %}
 <script>
   // Event listener for messages from the iframe
-  window.addEventListener('message', function (event) {
-    if (event.data.type === 'node-clicked') {
-      console.log('node clicked console log');
-      var explanationBlock = document.getElementById('explanationBlock');
-      explanationBlock.innerHTML = '<div class="spinner"></div>';
-  
-      fetch('/explanations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ topic: event.data.label }),
-      })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        explanationBlock.innerText = data.explanation;
-        // Right after displaying the explanation, fetch and redraw the graph
-        fetchUpdatedGraphDataAndRedraw();
-      })
-      .catch(function (error) {
-        explanationBlock.innerText = 'An error occurred.';
-        console.error('Error:', error);
-      });
-    }
-  }, false);
+  window.addEventListener(
+    'message',
+    function (event) {
+      if (event.data.type === 'node-clicked') {
+        console.log('node clicked console log');
+        var explanationBlock = document.getElementById('explanationBlock');
+        explanationBlock.innerHTML = '<div class="spinner"></div>';
+
+        fetch('/explanations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ topic: event.data.label }),
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            explanationBlock.innerText = data.explanation;
+            // Right after displaying the explanation, fetch and redraw the graph
+            fetchUpdatedGraphDataAndRedraw();
+          })
+          .catch(function (error) {
+            explanationBlock.innerText = 'An error occurred.';
+            console.error('Error:', error);
+          });
+      }
+    },
+    false
+  );
+
   function drawGraph(graphData) {
     // Select the SVG and its inner group element
-    console.log('in drawGraph', graphData)
+    console.log('in drawGraph', graphData);
     var svg = d3.select('svg'),
-        inner = svg.select('g');
-  
+      inner = svg.select('g');
+
     // Clear any existing content
-    inner.selectAll("*").remove();
-  
+    inner.selectAll('*').remove();
+
     // Create a new directed graph
     var g = new dagreD3.graphlib.Graph().setGraph({});
-  
+
     // Loop through nodes and add them to the graph
     graphData.nodes.forEach(function (node) {
       g.setNode(node.id, {
@@ -75,7 +80,7 @@
         label: `<button class='node-button' onclick='nodeClicked("${node.label}")'>${node.label}</button>`,
       });
     });
-  
+
     // Loop through edges and add them to the graph
     graphData.edges.forEach(function (edge) {
       g.setEdge(edge.source, edge.target, {
@@ -84,11 +89,11 @@
         height: 30,
       });
     });
-  
+
     // Configure renderer and render the graph
     var render = new dagreD3.render();
     render(inner, g);
-  
+
     // Adjust the SVG size based on the graph size
     var graphWidth = g.graph().width + 40; // Adding some padding
     var graphHeight = g.graph().height + 40; // Adding some padding
@@ -101,7 +106,7 @@
     fetch('/graph-data?_=' + new Date().getTime())
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched graph data:", data);
+        console.log('Fetched graph data:', data);
         drawGraph(data); // Draw the graph with fetched data
       })
       .catch((error) => {
