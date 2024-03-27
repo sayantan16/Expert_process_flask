@@ -4,6 +4,8 @@ import os
 import json
 from openai import OpenAI
 
+CodeSnippet=""
+
 def make_knowledge_graph_prompt(codeinfo, model):
     client = OpenAI()
 
@@ -59,11 +61,11 @@ def make_topic_text_prompt(topic, model):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a detailed explanation generator.\nPlease give a detailed explanation on the user input topic.\n\nGive a detailed explanation on the topic give, the explanation should contain general idea as well as its use-case. How the topic can be used and implemented.\n\nGive a very detailed explanation to the user for gaining expertise on the topic."
+                    "content": "You are a detailed explanation generator. Use the provided Code snippet and related topic to create an explanation of the provided topic, and how it relates to the provided code snippet. Include line numbers of the code snippet in your response. "
                 },
                 {
                     "role": "user",
-                    "content": topic
+                    "content": CodeSnippet+"\n Related Topic:"+topic
                 }
             ],
             temperature=1,
@@ -73,6 +75,36 @@ def make_topic_text_prompt(topic, model):
             presence_penalty=0
         )
     explanation = response.choices[0].message.content if response.choices else "No explanation found."
+    return explanation
+
+def update_knowledge_graph(topic, model):
+    client = OpenAI()
+    with open('application/static/jsonFiles/graphData.json', 'r', encoding='utf-8') as json_file:
+        currentGraph = json.dumps(json.load(json_file))
+    #print('Current Graph:',currentGraph)
+    response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {
+        "role": "system",
+        "content": f"Take the JSON formatted knowledge graph inputted by the user and add more nodes related to this topic: {topic}, include edges to other relevant topics. Return the updated json in the same format"
+        },
+        {
+            "role": "user",
+            "content": currentGraph
+        }
+    ],
+    temperature=1,
+    max_tokens=800,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+    #print(response)
+    explanation = response.choices[0].message.content if response.choices else "No explanation found."
+    #print('updated graph',explanation)
+    with open('application/static/jsonFiles/graphData.json', 'w', encoding='utf-8') as json_file:
+            json.dump(json.loads(explanation), json_file)
     return explanation
 
 @app.route("/")
@@ -85,6 +117,7 @@ def index():
 def code():
     if request.method == 'POST':
         text_data = request.form['text']
+        CodeSnippet = text_data
         response = make_knowledge_graph_prompt(text_data, "gpt-3.5-turbo-0125")
         #print(os.getcwd())
         with open('application/static/jsonFiles/graphData.json', 'w', encoding='utf-8') as json_file:
@@ -107,6 +140,7 @@ def explanations():
 
     try:
         explanation = make_topic_text_prompt(topic, "gpt-3.5-turbo-0125")
+        update_knowledge_graph(topic, "gpt-3.5-turbo-0125")
     except Exception as e:
         explanation = str(e)
 
