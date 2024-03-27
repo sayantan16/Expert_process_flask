@@ -1,6 +1,9 @@
 <!-- To install the packages -->
 
-1. pip install -r requirements.txt
+1. pip install virtualenv
+2. py -m venv venv
+3. source venv/bin/activate
+4. pip install -r requirements.txt
 
 <!-- To start with -->
 
