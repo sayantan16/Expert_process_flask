@@ -42,7 +42,12 @@
 
     <script>
       function drawGraph(graphData) {
-        var g = new dagreD3.graphlib.Graph().setGraph({});
+        var g = new dagreD3.graphlib.Graph().setGraph({
+          nodesep: 70,
+          ranksep: 50,
+          marginx: 20,
+          marginy: 20,
+        });
 
         graphData.nodes.forEach(function (node) {
           g.setNode(node.id, {
@@ -59,9 +64,10 @@
 
         graphData.edges.forEach(function (edge) {
           g.setEdge(edge.source, edge.target, {
-            label: '',
+            curve: d3.curveBasis, // Smooth curve
             width: 150,
             height: 30,
+            minlen: 1,
           });
         });
 

@@ -2,9 +2,16 @@
 <div class="rectangle">
   <div class="text-block-content-1">
     <!-- Problem content here -->
-    <pre><code>
-      {{text_data | safe }}
-    </code></pre>
+    <div class="code-container">
+      <div class="line-numbers">
+        {% for line in text_data.split('\n') %}
+        <div>{{ loop.index }}</div>
+        {% endfor %}
+      </div>
+      <div class="code-content">
+        <pre><code>{{ text_data }}</code></pre>
+      </div>
+    </div>
   </div>
 
   <div id="explanationBlock" class="text-block-content-2">
@@ -21,39 +28,145 @@
   ></iframe>
 </div>
 {% endblock %} {% block scripts %}
+
 <script>
   // Event listener for messages from the iframe
-  window.addEventListener(
-    'message',
-    function (event) {
-      if (event.data.type === 'node-clicked') {
-        console.log('node clicked console log');
-        var explanationBlock = document.getElementById('explanationBlock');
-        explanationBlock.innerHTML = '<div class="spinner"></div>';
+  window.addEventListener('message', function (event) {
+    if (event.data.type === 'node-clicked') {
+      fetchExplanation(event.data.label);
+    }
+  });
 
-        fetch('/explanations', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ topic: event.data.label }),
-        })
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (data) {
-            explanationBlock.innerText = data.explanation;
-            // Right after displaying the explanation, fetch and redraw the graph
-            fetchUpdatedGraphDataAndRedraw();
-          })
-          .catch(function (error) {
-            explanationBlock.innerText = 'An error occurred.';
-            console.error('Error:', error);
-          });
+  // Event listener for graph-related and wider-topic links
+  document
+    .querySelector('#explanationBlock')
+    .addEventListener('click', function (event) {
+      if (event.target.classList.contains('graph-related-link')) {
+        event.preventDefault();
+        fetchExplanation(event.target.dataset.topic);
       }
-    },
-    false
-  );
+      if (event.target.classList.contains('wider-topic-link')) {
+        event.preventDefault();
+        const topicName = event.target.dataset.topic;
+        handleFurtherReadingClick(topicName);
+      }
+    });
+
+  function fetchExplanation(topicName) {
+    var explanationBlock = document.getElementById('explanationBlock');
+    explanationBlock.innerHTML = '<div class="spinner"></div>';
+
+    fetch('/explanations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ topic: topicName }),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        const data = JSON.parse(responseData.explanation);
+        updateExplanationBlock(data); // Update the explanation block with new data
+      })
+      .catch((error) => {
+        console.error('Error fetching explanation:', error);
+        explanationBlock.innerHTML = 'An error occurred.';
+      });
+  }
+
+  function handleFurtherReadingClick(topicName) {
+    var explanationBlock = document.getElementById('explanationBlock');
+    explanationBlock.innerHTML = '<div class="spinner"></div>';
+
+    fetch('/update_and_explain', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ topic: topicName }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateExplanationBlock(JSON.parse(data.explanation)); // Assuming the explanation is returned the same way
+        fetchUpdatedGraphDataAndRedraw(); // Assuming this updates the graph visually
+        // You might need to adjust based on how data is returned
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        explanationBlock.innerHTML = 'An error occurred.';
+      });
+  }
+
+  // Function to update the explanation block
+  function updateExplanationBlock(data) {
+    console.log('data: ', data);
+
+    const explanationBlock = document.getElementById('explanationBlock');
+    explanationBlock.innerHTML = ''; // Clear current content
+
+    if (data['Topic Name']) {
+      const topicNameEl = document.createElement('h3');
+      topicNameEl.textContent = data['Topic Name'];
+      explanationBlock.appendChild(topicNameEl);
+    }
+
+    if (data['General Concept']) {
+      const generalConceptEl = document.createElement('p');
+      generalConceptEl.textContent = data['General Concept'];
+      explanationBlock.appendChild(generalConceptEl);
+    }
+
+    if (data['Relevant Lines'] && Object.keys(data['Relevant Lines']).length) {
+      const relevantLinesSection = document.createElement('div');
+      Object.entries(data['Relevant Lines']).forEach(
+        ([lineNumber, explanation]) => {
+          const lineEl = document.createElement('p');
+          lineEl.innerHTML = `<strong>Line ${lineNumber}:</strong> ${explanation}`;
+          relevantLinesSection.appendChild(lineEl);
+        }
+      );
+      explanationBlock.appendChild(relevantLinesSection);
+    }
+
+    if (data['Graph Hyperlinks'] && data['Graph Hyperlinks'].length) {
+      const graphLinksHeading = document.createElement('h4');
+      graphLinksHeading.textContent = 'Graph Related Links';
+      explanationBlock.appendChild(graphLinksHeading);
+
+      const graphLinksSection = document.createElement('div');
+      data['Graph Hyperlinks'].forEach((linkText) => {
+        const linkEl = document.createElement('a');
+        linkEl.href = '#'; // Prevent the page from navigating away
+        linkEl.classList.add('graph-related-link'); // Add a class for easy selection
+        linkEl.dataset.topic = linkText; // Store the topic name in a data attribute
+        linkEl.textContent = linkText;
+        graphLinksSection.appendChild(linkEl); // Append the link to the section
+        graphLinksSection.appendChild(document.createElement('br'));
+      });
+      explanationBlock.appendChild(graphLinksSection);
+    }
+
+    if (
+      data['Wider Topics Hyperlinks'] &&
+      data['Wider Topics Hyperlinks'].length
+    ) {
+      const widerTopicsHeading = document.createElement('h4');
+      widerTopicsHeading.textContent = 'Further Reading';
+      explanationBlock.appendChild(widerTopicsHeading);
+
+      const widerTopicsSection = document.createElement('div');
+      data['Wider Topics Hyperlinks'].forEach((topicText) => {
+        const topicEl = document.createElement('a');
+        topicEl.href = '#';
+        topicEl.classList.add('wider-topic-link'); // A specific class for event delegation
+        topicEl.dataset.topic = topicText;
+        topicEl.textContent = topicText;
+        widerTopicsSection.appendChild(topicEl);
+        widerTopicsSection.appendChild(document.createElement('br'));
+      });
+      explanationBlock.appendChild(widerTopicsSection);
+    }
+  }
 
   function drawGraph(graphData) {
     // Select the SVG and its inner group element
@@ -151,4 +264,5 @@
     }
   });
 </script>
+
 {% endblock %}

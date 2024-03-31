@@ -138,6 +138,15 @@ body, html {
     font-size: medium;
 }
 
+.text-block-content-2 a {
+    color: blue; /* Example color */
+    text-decoration: none;
+}
+  
+.text-block-content-2 a:hover {
+    text-decoration: underline;
+}
+
 .text-block-content-3 {
     height: 77vh; /* Adjust the height as needed, vh could make it responsive */
     width: 100%; /* Hide overflow to maintain a clean layout */
@@ -166,16 +175,41 @@ body, html {
     border-radius: 50%;
     border-left-color: #09f;
     animation: spin 1s ease infinite;
-  }
+}
+
+.code-container {
+    display: flex;
+    width: 100%;
+    background-color: #282c34;
+    color: #ffffff;
+}
+
+.line-numbers {
+    text-align: right;
+    padding-right: 10px;
+    user-select: none; /* Prevent selection to improve UX */
+    background-color: #282a36; /* Slightly different background for contrast */
+    color: #767676;
+    font-family: monospace; /* Monospaced font for even spacing */
+}
+
+.code-content {
+    flex-grow: 1;
+}
+
+.code-content pre {
+    margin: 0; /* Remove default margin */
+    font-family: monospace; /* Monospaced font for even spacing */
+}  
   
-  @keyframes spin {
+@keyframes spin {
     0% {
       transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
     }
-  }  
+}  
 
 /* Responsive adjustments if necessary */
 @media (max-width: 768px) {

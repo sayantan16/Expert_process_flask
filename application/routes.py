@@ -11,6 +11,7 @@ def make_knowledge_graph_prompt(codeinfo, model):
 
     response = client.chat.completions.create(
         model=model,
+        response_format={ "type": "json_object" },
         messages=[
             {
                 "role": "system",
@@ -53,27 +54,27 @@ def make_selected_text_prompt(selected_text, model):
     explanation = response.choices[0].message.content if response.choices else "No explanation found."
     return explanation
 
-def make_topic_text_prompt(topic, model):
+def make_topic_text_prompt(topic_name, code_snippet, knldg_graph, model):
     client = OpenAI()
-
     response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a detailed explanation generator. Use the provided Code snippet and related topic to create an explanation of the provided topic, and how it relates to the provided code snippet. Include line numbers of the code snippet in your response. "
-                },
-                {
-                    "role": "user",
-                    "content": CodeSnippet+"\n Related Topic:"+topic
-                }
-            ],
-            temperature=1,
-            max_tokens=512,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
+        model=model,
+        response_format={ "type": "json_object" },
+        messages=[
+            {
+                "role": "system",
+                "content": "Please generate a JSON response detailing a topic related to the user's provided code. The response should follow this structure:\n\nUser input will have:\n1. Topic Name\n2. Input Code Snippet\n3. Knowledge Graph\n\n{\n  \"Topic Name\": \"Specify the topic chosen by the user.\",\n  \"General Concept\": \"Provide a succinct overview of the topic, using minimum 500 words.\",\n  \"Relevant Lines\": {\n    \"line number\": \"Explain how the topic relates to this specific line of code.\"\n  },\n  \"Graph Hyperlinks\": [\"Related topic 1\", \"Related topic 2\"],\n  \"Wider Topics Hyperlinks\": [\"Extended topic 1\", \"Extended topic 2\", \"Extended topic 3\"]\n}\n\nGuidelines for each section:\n\n- Topic Name: Enter the topic selected by the user.\n- General Concept: Offer a brief and clear description of the concept.\n- Relevant Lines: Create a dictionary with line numbers and their corresponding explanations, focusing on the topic's relevance to the code.\n- Graph Hyperlinks: Include 2-3 topics closely related to the main topic, as found in the knowledge graph.\n- Wider Topics Hyperlinks: Suggest 3-4 additional topics not in the knowledge graph but relevant for broader understanding or further exploration.\n\nRemember to tailor the response to the user's input, following the JSON format provided."
+            },
+            {
+                "role": "user",
+                "content": f"1. Topic Name - {topic_name}\n2. Input Code Snippet - {code_snippet}\n3. Knowledge Graph - {knldg_graph}"
+            }
+        ],
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
     explanation = response.choices[0].message.content if response.choices else "No explanation found."
     return explanation
 
@@ -81,7 +82,6 @@ def update_knowledge_graph(topic, model):
     client = OpenAI()
     with open('application/static/jsonFiles/graphData.json', 'r', encoding='utf-8') as json_file:
         currentGraph = json.dumps(json.load(json_file))
-    #print('Current Graph:',currentGraph)
     response = client.chat.completions.create(
     model=model,
     messages=[
@@ -115,6 +115,7 @@ def index():
 
 @app.route("/code", methods=['GET', 'POST'])
 def code():
+    global CodeSnippet
     if request.method == 'POST':
         text_data = request.form['text']
         CodeSnippet = text_data
@@ -136,11 +137,20 @@ def graph_data():
 @app.route('/explanations', methods=['POST'])
 def explanations():
     data = request.get_json()
-    topic = data.get('topic')
+    topic_name = data.get('topic')
+
+    global CodeSnippet
+    code_snippet = CodeSnippet
+
+    path_to_file = os.path.join(current_app.root_path, 'static', 'jsonFiles', 'graphData.json')
+    with open(path_to_file) as f:
+        graph_data = json.load(f)  # This loads the graph data into a dictionary
+    # Convert the dictionary back to a JSON-formatted string
+    knldg_graph = json.dumps(graph_data)
 
     try:
-        explanation = make_topic_text_prompt(topic, "gpt-3.5-turbo-0125")
-        update_knowledge_graph(topic, "gpt-3.5-turbo-0125")
+        explanation = make_topic_text_prompt(topic_name, code_snippet, knldg_graph, "gpt-3.5-turbo-0125")
+        # update_knowledge_graph(topic, "gpt-3.5-turbo-0125")
     except Exception as e:
         explanation = str(e)
 
@@ -161,3 +171,16 @@ def get_explanation():
         explanation = str(e)
 
     return jsonify(explanation=explanation)
+
+@app.route('/update_and_explain', methods=['POST'])
+def update_and_explain():
+    data = request.get_json()
+    topic_name = data.get('topic')
+
+    try:
+        # Assuming update_knowledge_graph now also returns the updated graph data
+        updated_graph = update_knowledge_graph(topic_name, "gpt-3.5-turbo-0125")
+        explanation = make_topic_text_prompt(topic_name, CodeSnippet, updated_graph, "gpt-3.5-turbo-0125")
+        return jsonify(explanation=explanation, graph=updated_graph)
+    except Exception as e:
+        return jsonify(error=str(e)), 500
