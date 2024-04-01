@@ -245,19 +245,20 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // If using CSRF protection, add the token here
         },
         body: JSON.stringify({ selectedText: selectedText }),
       })
         .then(function (response) {
           return response.json();
         })
-        .then(function (data) {
-          explanationBlock.innerText = data.explanation;
+        .then(function (responseData) {
+          // Assuming responseData contains the explanation in the new JSON structure
+          const data = JSON.parse(responseData.explanation); // Parse the explanation if necessary
+          updateExplanationBlock(data); // Use the updateExplanationBlock function to handle the parsed data
         })
         .catch(function (error) {
-          explanationBlock.innerText = 'An error occurred.';
           console.error('Error:', error);
+          explanationBlock.innerHTML = 'An error occurred.';
         });
     } else {
       alert('Please select some text to process.');

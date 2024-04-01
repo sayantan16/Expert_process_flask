@@ -30,19 +30,20 @@ def make_knowledge_graph_prompt(codeinfo, model):
     )
     return response.choices[0].message.content
 
-def make_selected_text_prompt(selected_text, model):
+def make_selected_text_prompt(selected_text, code_snippet, knldg_graph, model):
     client = OpenAI()
 
     response = client.chat.completions.create(
             model=model,
+            response_format={ "type": "json_object" },
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a detailed explanation generator.\nPlease give a detailed explanation on the user input code snippet.\n\nUnderstand the language of the code and then give as much information in detailed and concise way as you can."
+                    "content": "Create a detailed JSON response based on user-provided inputs, focusing on code analysis and knowledge graph integration. The inputs and expectations are as follows:\n\n1. Code Lines: Specific lines of code the user wants analyzed.\n2. Input Code Snippet: The complete code snippet for understanding the overall context and programming language used.\n3. Knowledge Graph: The current knowledge graph to ensure suggested graph links/topics are relevant to existing nodes/topics, with wider topics extending beyond the immediate scope of the graph but related to the code lines.\n\nStructure the JSON response like this:\n\n{\n  \"Topic Name\": \"Inferred topic from the code lines\",\n  \"General Concept\": \"Provide a succinct overview of the topic, limited to 100 words.\",\n  \"Relevant Lines\": {\n    \"line number\": \"Explain the relevance of these specific lines to the inferred topic.\"\n  },\n  \"Graph Hyperlinks\": [\"Related topic 1\", \"Related topic 2\"],\n  \"Wider Topics Hyperlinks\": [\"Extended topic 1\", \"Extended topic 2\", \"Extended topic 3\"]\n}\n\nInstructions for content generation:\n\n- Topic Name: Deduce the main topic based on the specific code lines provided.\n- General Concept: Describe the concept related to the inferred topic in 500 words.\n- Relevant Lines: Identify and explain the importance of the specific code lines in relation to the topic.\n- Graph Hyperlinks: Select 2-3 topics from the knowledge graph that are closely connected to the inferred topic.\n- Wider Topics Hyperlinks: Suggest 3-4 broader, related topics not directly linked in the knowledge graph but relevant to the overall concept and language of the input code snippet.\n\nEnsure the response strictly follows the outlined JSON format, deriving insights from the specific lines of code, the broader code snippet, and the knowledge graph provided by the user."
                 },
                 {
                     "role": "user",
-                    "content": selected_text
+                    "content": f"1. Code Lines: {selected_text}\n2. Input Code Snippet: {code_snippet}\n3. Knowledge Graph: {knldg_graph}"
                 }
             ],
             temperature=1,
@@ -84,18 +85,19 @@ def update_knowledge_graph(topic, model):
         currentGraph = json.dumps(json.load(json_file))
     response = client.chat.completions.create(
     model=model,
+    response_format={ "type": "json_object" },
     messages=[
         {
-        "role": "system",
-        "content": f"Take the JSON formatted knowledge graph inputted by the user and add more nodes related to this topic: {topic}, include edges to other relevant topics. Return the updated json in the same format"
+            "role": "system",
+            "content": "Refine a JSON-formatted knowledge graph by integrating a specified topic and related nodes. Adhere to these instructions:\n\n1. Inputs:\n   - Topic Name: Subject for expansion.\n   - Knowledge Graph: Existing JSON knowledge graph.\n\n2. Update Process:\n   - Direct Linking: Add the specified topic as a new node. Ensure it connects to at least one node from the original graph. If a direct connection isn’t applicable, proceed to the next step.\n   - Bridging: For topics without a clear link to the original graph, introduce intermediary nodes that serve as a bridge between the new topic and the existing nodes, maintaining a coherent structure.\n   - Expansion: Incorporate 5-6 additional related topics as new nodes, each properly connected to the specified topic or intermediary nodes, thus enriching the graph’s network.\n\n3. Consistency and Output:\n   - Maintain the format of the original knowledge graph.\n   - Return the enhanced graph in JSON, demonstrating the expanded network with clear links between old and new nodes.\n\nFocus on ensuring every new node connects to the original graph, directly or through newly added bridge topics, to preserve the knowledge graph’s integrity and interconnectedness."
         },
         {
             "role": "user",
-            "content": currentGraph
+            "content": f"Topic Name: {topic}\nKnowledge Graph: {currentGraph}"
         }
     ],
     temperature=1,
-    max_tokens=800,
+    max_tokens=1024,
     top_p=1,
     frequency_penalty=0,
     presence_penalty=0
@@ -165,8 +167,17 @@ def get_explanation():
     data = request.get_json()
     selected_text = data.get('selectedText')
 
+    global CodeSnippet
+    code_snippet = CodeSnippet
+
+    path_to_file = os.path.join(current_app.root_path, 'static', 'jsonFiles', 'graphData.json')
+    with open(path_to_file) as f:
+        graph_data = json.load(f)  # This loads the graph data into a dictionary
+    # Convert the dictionary back to a JSON-formatted string
+    knldg_graph = json.dumps(graph_data)
+
     try:
-        explanation = make_selected_text_prompt(selected_text, "gpt-3.5-turbo-0125")
+        explanation = make_selected_text_prompt(selected_text, code_snippet, knldg_graph, "gpt-3.5-turbo-0125")
     except Exception as e:
         explanation = str(e)
 
