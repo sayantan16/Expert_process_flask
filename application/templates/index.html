@@ -1,24 +1,93 @@
 {% extends "layout.html" %} {% block left %}
 <div class="rectangle">
-  <!-- Specify the URL for the form's action attribute -->
-  <form id="exampleForm" action="{{ url_for('code') }}" method="post">
-    <div class="mb-3">
-      <textarea
-        class="form-control"
-        id="exampleTextArea"
-        name="text"
-        placeholder="Enter text here"
-      ></textarea>
-    </div>
-
-    <hr class="text-block-divider" />
-
-    <div class="mb-3 d-grid gap-2">
-      <!-- The type="submit" will trigger the form action -->
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-  </form>
+  <!-- No more form here, just the text area -->
+  <div class="mb-3">
+    <textarea
+      class="form-control"
+      id="exampleTextArea"
+      name="text"
+      placeholder="Enter text here"
+    ></textarea>
+  </div>
 </div>
 {% endblock %} {% block right %}
-<div class="text-block-content-3"></div>
+<div class="rectangle" style="background-color: rgba(181, 181, 181, 0.593)">
+  <h3 class="text-block-heading">Quick Links</h3>
+  <hr class="text-block-divider" />
+  <div class="quick-links">
+    <div class="row">
+      <div class="col-sm-6">
+        <a
+          id="code-basics"
+          href="javascript:void(0);"
+          class="btn btn-primary btn-lg btn-index"
+          data-url="{{ url_for('code') }}"
+          >Code Basics</a
+        >
+      </div>
+      <div class="col-sm-6">
+        <a
+          id="algorithm-aid"
+          href="javascript:void(0);"
+          class="btn btn-primary btn-lg btn-index"
+          data-url="{{ url_for('code') }}"
+          >Algorithm Aid</a
+        >
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <a
+          id="skill-setup"
+          href="javascript:void(0);"
+          class="btn btn-primary btn-lg btn-index"
+          data-url="{{ url_for('code') }}"
+          >Skill Setup/Building</a
+        >
+      </div>
+      <div class="col-sm-6">
+        <a
+          id="debugging-help"
+          href="javascript:void(0);"
+          class="btn btn-primary btn-lg btn-index"
+          data-url="{{ url_for('code') }}"
+          >Debugging Help</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var buttons = document.querySelectorAll('.btn-index');
+    buttons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var url = this.getAttribute('data-url');
+        submitText(url);
+      });
+    });
+  });
+
+  function submitText(url) {
+    var text = document.getElementById('exampleTextArea').value;
+    if (text.trim() !== '') {
+      var form = document.createElement('form');
+      form.style.display = 'none'; // Hide the form
+      form.method = 'POST';
+      form.action = url;
+
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'text';
+      input.value = text;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      alert('Please enter some text.');
+    }
+  }
+</script>
 {% endblock %}

@@ -64,10 +64,9 @@ body, html {
 /* Form controls (input, textarea) */
 .form-control {
     width: 100%; /* Full width */
-    height: 70vh;
+    height: 79vh;
     overflow-y: auto; /* Allow vertical scrolling */
     overflow-x: auto; /* Allow vertical scrolling */
-    padding: .375rem .75rem; /* Bootstrap's default padding for form controls */
     border-radius: .25rem; /* Bootstrap's default border radius */
     border: 1px solid #ced4da; /* Bootstrap's default border */
     font-size: 1rem; /* Bootstrap's default font size */
@@ -200,7 +199,37 @@ body, html {
 .code-content pre {
     margin: 0; /* Remove default margin */
     font-family: monospace; /* Monospaced font for even spacing */
-}  
+}
+
+.quick-links {
+    display: flex;
+    flex-direction: column;
+}
+
+.quick-links .row {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.quick-links .col-sm-6 {
+    flex: 1;
+    padding: 13%;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+.btn-index {
+    background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    transition: background-image 0.5s, transform 0.5s, box-shadow 0.5s, color 0.5s;
+}
+
+.btn-index:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-image: linear-gradient(to right, #073d9a 0%, #490493 100%);
+    color: white;
+    transform: translateY(-2px);
+}
   
 @keyframes spin {
     0% {

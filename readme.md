@@ -8,7 +8,8 @@
 <!-- To start with -->
 
 1. source venv/bin/activate
-2. flask run
+2. export OPENAI_API_KEY=123...
+3. flask run
 
 <!-- To set the environment variable (Mac) -->
 
