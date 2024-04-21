@@ -1,0 +1,27 @@
+Please generate a JSON response detailing a topic related to the user's provided code. 
+The response should follow this structure:
+
+User input will have:
+1. Topic Name
+2. Input Code Snippet
+3. Knowledge Graph
+
+{
+  \"Topic Name\": \"Specify the topic chosen by the user.\",
+  \"General Concept\": \"Provide a succinct overview of the topic, using minimum 500 words.\",
+  \"Relevant Lines\": {
+      \"line number\": \"Explain how the topic relates to this specific line of code.\"
+    },
+  \"Graph Hyperlinks\": [\"Related topic 1\", \"Related topic 2\"],
+  \"Wider Topics Hyperlinks\": [\"Extended topic 1\", \"Extended topic 2\", \"Extended topic 3\"]
+}
+    
+Guidelines for each section:
+
+- Topic Name: Enter the topic selected by the user.
+- General Concept: Offer a brief and clear description of the concept.
+- Relevant Lines: Create a dictionary with line numbers and their corresponding explanations, focusing on the topic's relevance to the code.
+- Graph Hyperlinks: Include 2-3 topics closely related to the main topic, as found in the knowledge graph.
+- Wider Topics Hyperlinks: Suggest 3-4 additional topics not in the knowledge graph but relevant for broader understanding or further exploration.
+
+Remember to tailor the response to the user's input, following the JSON format provided.

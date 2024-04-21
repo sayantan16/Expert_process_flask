@@ -14,3 +14,7 @@
 <!-- To set the environment variable (Mac) -->
 
 export OPENAI_API_KEY='Your Key Here';
+
+<!-- To check for implementation: -->
+
+Gradio
